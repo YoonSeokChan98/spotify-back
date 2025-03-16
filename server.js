@@ -1,15 +1,22 @@
 import express from 'express';
 import db from './models/index.js';
 import dotenv from 'dotenv';
-import config from './config/config.js';
+import cors from 'cors';
+
+import userRouter from './router/user.js';
 
 dotenv.config();
 
 const app = express();
 
-const PORT = 3001;
 const HOST = 'localhost';
+const PORT = 4000;
 
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // Next.js 실행 주소
+  })
+);
 app.use(express.json());
 
 // 서버 연결 테스트
@@ -17,8 +24,8 @@ app.get('/', (req, res) => {
   res.send('서버연결 확인');
 });
 
-// api 라우트
-// app.use('/api/user');
+// API 라우터
+app.use('/api/user', userRouter);
 
 // 404
 app.get('*', (req, res) => {
