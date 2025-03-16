@@ -31,7 +31,7 @@ export const signup = async (req, res) => {
       userId,
       userPassword: encryption,
     });
-    
+
     res.status(201).json({
       result: true,
       data: newUser,
@@ -56,17 +56,16 @@ export const login = async (req, res) => {
         userId,
       },
     });
-    console.log('🚀 ~ login ~ find:', find);
     if (find) {
       const decryption = await bcrypt.compare(userPassword, find.userPassword);
       if (decryption) {
         // 리덕스에 넣을 유저의 정보
         const userInfo = {
-          id: find.userId,
+          userId: find.userId,
         };
         // 토큰 발급용 유저의 정보
         const jwtToken = {
-          id: find.userId,
+          userId: find.userId,
         };
         // 토큰 발급
         const token = jwt.sign({ user: jwtToken }, JWT_SECRET, {
@@ -80,7 +79,7 @@ export const login = async (req, res) => {
           data: userInfo,
         });
       } else {
-        return res.status(404).json({
+        return res.status(401).json({
           result: false,
           data: null,
           message: '비밀번호가 틀렸습니다',
